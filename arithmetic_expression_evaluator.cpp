@@ -17,6 +17,9 @@ enum arithmeticResult {
 	PAREN_NOT_BALANCED,
 	DIVISION_BY_ZERO,
 	ILLEGAL_EXPRESSION,
+    TOO_MANY_OPERATORS,
+    TOO_MANY_OPERANDS,
+    NO_OPERANDS,
 	SUCCESS
 };
 
@@ -95,7 +98,7 @@ arithmeticResult doArithmetic(string expr, float& result) {
     }
     
     if (floats.size() == 0) {
-        return arithmeticResult::ILLEGAL_EXPRESSION;
+        return arithmeticResult::NO_OPERANDS;
     }
     
     int sawNumber = 0;
@@ -128,6 +131,14 @@ arithmeticResult doArithmetic(string expr, float& result) {
         } else {
             sawNumber = 1;
         }            
+    }
+    
+    if (operators.size() >= floats.size()) {
+        return arithmeticResult::TOO_MANY_OPERATORS;
+    }
+    
+    if (floats.size() >= operators.size() + 1) {
+        return arithmeticResult::TOO_MANY_OPERANDS;
     }
     
     /* for (int i = 0; i < operators.size(); i++) {
@@ -312,6 +323,15 @@ int main() {
 			break;
 		case ILLEGAL_EXPRESSION:
 			printf("Illegal arithmetic expression!\n");
+			break;
+        case TOO_MANY_OPERATORS:
+			printf("Too many operators!\n");
+			break;
+        case TOO_MANY_OPERANDS:
+			printf("Too many operands!\n");
+			break;
+        case NO_OPERANDS:
+			printf("No operands!\n");
 			break;
 		}
     }
