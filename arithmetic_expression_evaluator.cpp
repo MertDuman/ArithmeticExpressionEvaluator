@@ -4,6 +4,7 @@
 #include <stdlib.h> 
 #include <regex>
 #include <vector>
+#include <cmath>
 #include <chrono>
 
 using namespace std;
@@ -20,6 +21,7 @@ enum arithmeticResult {
     TOO_MANY_OPERATORS,
     TOO_MANY_OPERANDS,
     NO_OPERANDS,
+    ZERO_TO_ZERO,
 	SUCCESS
 };
 
@@ -27,7 +29,7 @@ enum arithmeticResult {
  * Checks if the expression is arithmetic.
 **/
 bool isArithmeticExpression(string expr) {
-    regex nonArith("[^-+*/%0-9\\. \\(\\)\n]");
+    regex nonArith("[^-+*/%\\^0-9\\. \\(\\)\n]");
     
     return !regex_search(expr, nonArith);
 }
@@ -118,7 +120,7 @@ arithmeticResult doArithmetic(string expr, float& result) {
                 operators.push_back(toPush);
                 sawNumber = 0;
             }
-        } else if (expr[i] == '*' || expr[i] == '/' || expr[i] == '%') {
+        } else if (expr[i] == '*' || expr[i] == '/' || expr[i] == '%' || expr[i] == '^') {
             if (sawNumber == 0) {
                 return arithmeticResult::ILLEGAL_EXPRESSION;
             } else {
@@ -153,6 +155,35 @@ arithmeticResult doArithmetic(string expr, float& result) {
         float y = floats[index + 1];
         float res;
         
+        if (operators[index] == "^") {
+            if (x == 0 && y == 0) {
+                return arithmeticResult::ZERO_TO_ZERO;
+            }
+            
+            res = pow(x, y);
+            
+            operators.erase(operators.begin() + index);
+        } else {
+            didOp = 0;
+            index++;
+        }
+        
+        if (didOp == 1) {
+            floats.erase(floats.begin() + index);
+            floats.erase(floats.begin() + index);
+            floats.insert(floats.begin() + index, res);
+        }
+        didOp = 1;
+    }
+        
+    index = 0;
+    didOp = 1;
+    size = operators.size();
+    for (int i = 0; i < size; i++) {
+        float x = floats[index];
+        float y = floats[index + 1];
+        float res;
+        
         if (operators[index] == "*") {
             res = x * y;
             operators.erase(operators.begin() + index);
@@ -163,7 +194,8 @@ arithmeticResult doArithmetic(string expr, float& result) {
             res = x / y;
             operators.erase(operators.begin() + index);
         } else if (operators[index] == "%") {
-            res = (int)x % (int)y;
+            res = fmod(x, y);
+            
             operators.erase(operators.begin() + index);
         } else {
             didOp = 0;
