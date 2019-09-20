@@ -137,7 +137,7 @@ arithmeticResult doArithmetic(string expr, float& result) {
         return arithmeticResult::TOO_MANY_OPERATORS;
     }
     
-    if (floats.size() >= operators.size() + 1) {
+    if (floats.size() > operators.size() + 1) {
         return arithmeticResult::TOO_MANY_OPERANDS;
     }
     
