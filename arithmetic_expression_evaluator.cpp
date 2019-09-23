@@ -83,13 +83,13 @@ int getLengthParenthesis(string expr, int startLoc) {
  * Calculates the value of the arithmetic expression. 
  * This expression is assumed to not have any parenthesis.
 **/
-arithmeticResult doArithmetic(string expr, float& result) {
+arithmeticResult doArithmetic(string expr, double& result) {
     regex nums("([0-9]*)\\.([0-9]+)|([0-9]+)");
     
     smatch match;
     string temp;
     
-    vector<float> floats;
+    vector<double> floats;
     vector<string> operators;
     
     temp = expr;
@@ -151,9 +151,9 @@ arithmeticResult doArithmetic(string expr, float& result) {
     int didOp = 1;
     int size = operators.size();
     for (int i = 0; i < size; i++) {
-        float x = floats[index];
-        float y = floats[index + 1];
-        float res;
+        double x = floats[index];
+        double y = floats[index + 1];
+        double res;
         
         if (operators[index] == "^") {
             if (x == 0 && y == 0) {
@@ -180,9 +180,9 @@ arithmeticResult doArithmetic(string expr, float& result) {
     didOp = 1;
     size = operators.size();
     for (int i = 0; i < size; i++) {
-        float x = floats[index];
-        float y = floats[index + 1];
-        float res;
+        double x = floats[index];
+        double y = floats[index + 1];
+        double res;
         
         if (operators[index] == "*") {
             res = x * y;
@@ -214,9 +214,9 @@ arithmeticResult doArithmetic(string expr, float& result) {
     didOp = 1;
     size = operators.size();
     for (int i = 0; i < size; i++) {
-        float x = floats[index];
-        float y = floats[index + 1];
-        float res;
+        double x = floats[index];
+        double y = floats[index + 1];
+        double res;
         
         if (operators[index] == "+") {
             res = x + y;
@@ -279,7 +279,7 @@ arithmeticResult evaluateArithmeticExpressionRecursive(string& expr, int startLo
     }
     
     /* If no parenthesis are left, do simple arithmetic */
-	float result;
+	double result;
     arithmeticResult eResult = doArithmetic(expr.substr(startLoc, length - lengthDifference), result);
             
 	if (eResult != arithmeticResult::SUCCESS) {
@@ -287,8 +287,8 @@ arithmeticResult evaluateArithmeticExpressionRecursive(string& expr, int startLo
 	}
 
     /* Save the result as string */
-    char buffer[32];
-    sprintf(buffer, "%.2f", result);
+    char buffer[128];
+    sprintf(buffer, "%f", result);
     string temp(buffer);
     
     /* Update the original expression with the new float value
@@ -305,7 +305,7 @@ arithmeticResult evaluateArithmeticExpressionRecursive(string& expr, int startLo
 /**
  * Wrapper call for arithmetic expression evaluator. Checks if the expression is suitable.
 **/
-arithmeticResult evaluateArithmeticExpression(string expr, float& result) {
+arithmeticResult evaluateArithmeticExpression(string expr, double& result) {
     if (!isArithmeticExpression(expr)) {
         return arithmeticResult::NOT_ARITHMETIC;
     }
@@ -334,7 +334,7 @@ int main() {
 			break;
 		}
 
-        float result;
+        double result;
         auto start = high_resolution_clock::now(); 
 		arithmeticResult eResult = evaluateArithmeticExpression(expr, result);
         auto end = high_resolution_clock::now();
